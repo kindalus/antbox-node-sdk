@@ -28,6 +28,15 @@ export interface Action {
   filters: NodeFilter[];
 }
 
+export interface ActionParams {
+  name: string;
+  title: string;
+  type: string;
+  required: boolean;
+  validationRegex?: string;
+  validationList?: string[];
+}
+
 export type Properties = Record<string, unknown>;
 
 export interface Node extends Record<string, unknown> {
