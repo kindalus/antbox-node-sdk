@@ -9,7 +9,6 @@ import type { Node, NodeFilter } from "./antbox";
 import {
   FolderNode,
   FOLDER_MIMETYPE,
-  META_NODE_MIMETYPE,
   NodeFilterResult,
   SmartFolderNodeEvaluation,
 } from "./antbox";
@@ -42,13 +41,7 @@ export class NodeServiceClient {
   createFolder(
     metadata: Partial<FolderNode>
   ): Promise<Either<AntboxError, Node>> {
-    const url = endpoint(this.server);
-    const body = JSON.stringify({
-      metadata: { ...metadata, mimetype: FOLDER_MIMETYPE },
-    });
-    const init = requestInit(this.server, "POST", body, "application/json");
-
-    return fetch(url, init).then(processResponse(toObject<Node>));
+    return this.create({ ...metadata, mimetype: FOLDER_MIMETYPE });
   }
 
   createFile(
@@ -61,11 +54,9 @@ export class NodeServiceClient {
     return fetch(url, init).then(processResponse(toObject<Node>));
   }
 
-  createMetanode(metadata: Partial<Node>): Promise<Either<AntboxError, Node>> {
+  create(metadata: Partial<Node>): Promise<Either<AntboxError, Node>> {
     const url = endpoint(this.server);
-    const body = JSON.stringify({
-      metadata: { ...metadata, mimetype: META_NODE_MIMETYPE },
-    });
+    const body = JSON.stringify(metadata);
     const init = requestInit(this.server, "POST", body, "application/json");
 
     return fetch(url, init).then(processResponse(toObject<Node>));

@@ -1,27 +1,54 @@
-import { Aspect } from "./antbox";
+import { Either, AntboxError } from ".";
+import { AspectNode } from "./antbox";
+import { processResponse, toObject, toVoid } from "./process_response";
 import { requestInit } from "./request_utils";
 import { ServerOpts } from "./server_opts";
 
 export class AspectServiceClient {
   constructor(private readonly server: ServerOpts) {}
 
-  get(uuid: string): Promise<Aspect> {
-    const getEndpoint = this.endpoint("/", uuid);
+  get(uuid: string): Promise<Either<AntboxError, AspectNode>> {
+    const url = this.#endpoint("/", uuid);
 
     const init = requestInit();
 
-    return fetch(getEndpoint, init).then((res) => res.json());
+    return fetch(url, init).then(processResponse(toObject<AspectNode>));
   }
 
-  list(): Promise<Aspect[]> {
-    const createEndpoint = this.endpoint();
+  list(): Promise<Either<AntboxError, AspectNode[]>> {
+    const url = this.#endpoint();
 
     const init = requestInit();
 
-    return fetch(createEndpoint, init).then((res) => res.json());
+    return fetch(url, init).then(processResponse(toObject<AspectNode[]>));
   }
 
-  private endpoint(...path: string[]): string {
+  export(uuid: string): Promise<Either<AntboxError, Blob>> {
+    const url = this.#endpoint("/", uuid, "/-/export");
+    const init = requestInit(this.server);
+
+    return fetch(url, init).then(processResponse((res) => res.blob()));
+  }
+
+  delete(uuid: string): Promise<Either<AntboxError, void>> {
+    const url = this.#endpoint("/", uuid);
+    const init = requestInit(this.server, "DELETE");
+
+    return fetch(url, init).then(processResponse(toVoid));
+  }
+
+  createOrReplace(file: File): Promise<Either<AntboxError, AspectNode>> {
+    const url = this.server.url.concat("/upload/aspects");
+
+    const formData = new FormData();
+    formData.append("file", file, file.name);
+
+    const init = requestInit(this.server, "POST", formData);
+
+    return fetch(url, init).then(processResponse(toObject<AspectNode>));
+  }
+
+  #endpoint(...path: string[]): string {
     const endpoint = this.server.url.concat("/", "aspects");
 
     if (!path.length) {

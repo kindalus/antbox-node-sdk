@@ -1,26 +1,37 @@
 export const FOLDER_MIMETYPE = "application/vnd.antbox.folder";
 export const META_NODE_MIMETYPE = "application/vnd.antbox.metanode";
 export const SMART_FOLDER_MIMETYPE = "application/vnd.antbox.smartfolder";
-export const ACTION_MIMETYPE = "application/vnd.antbox.action";
 export const ASPECT_MIMETYPE = "application/vnd.antbox.aspect";
-export const EXTENTION_MIMETYPE = "application/vnd.antbox.extension";
-export const GROUP_MIMETYPE = "application/vnd.antbox.group";
+export const ACTION_MIMETYPE = "application/vnd.antbox.action";
+export const EXT_MIMETYPE = "application/vnd.antbox.extension";
 export const USER_MIMETYPE = "application/vnd.antbox.user";
+export const GROUP_MIMETYPE = "application/vnd.antbox.group";
+export const OCR_TEMPLATE_MIMETYPE = "application/vnd.antbox.ocrtemplate";
+export const API_KEY_MIMETYPE = "application/vnd.antbox.apikey";
 
 export const ROOT_FOLDER_UUID = "--root--";
 export const USERS_FOLDER_UUID = "--users--";
 export const GROUPS_FOLDER_UUID = "--groups--";
 export const ASPECTS_FOLDER_UUID = "--aspects--";
 export const ACTIONS_FOLDER_UUID = "--actions--";
-export const EXTENTIONS_FOLDER_UUID = "--ext--";
+export const EXT_FOLDER_UUID = "--ext--";
 export const SYSTEM_FOLDER_UUID = "--system--";
-export const FID_PREFIX = "fid--";
+export const OCR_TEMPLATES_FOLDER_UUID = "--ocr-templates--";
+export const API_KEYS_FOLDER_UUID = "--api-keys--";
 
-export interface Action {
-  uuid: string;
-  title: string;
-  description: string;
-  builtIn: boolean;
+const FID_PREFIX = "--fid--";
+
+export const SYSTEM_MIMETYPES = [
+  ASPECT_MIMETYPE,
+  ACTION_MIMETYPE,
+  EXT_MIMETYPE,
+  USER_MIMETYPE,
+  GROUP_MIMETYPE,
+  OCR_TEMPLATE_MIMETYPE,
+  API_KEY_MIMETYPE,
+];
+
+export interface ActionNode extends Node {
   runOnCreates: boolean;
   runOnUpdates: boolean;
   runManually: boolean;
@@ -64,11 +75,6 @@ export interface FolderNode extends Node {
     authenticated: Permissions[];
     anonymous: Permissions[];
   };
-}
-
-export interface FileNode extends Node {
-  // Versões têm o formato aaaa-MM-ddTHH:mm:ss
-  versions: string[];
 }
 
 export interface SmartFolderNode extends Node {
@@ -115,13 +121,9 @@ export type AggregationFormula =
   | "min"
   | "string";
 
-export interface Aspect {
-  uuid: string;
-  title: string;
-  description: string;
-  builtIn: boolean;
+export interface AspectNode extends Node {
   filters: NodeFilter[];
-  properties: AspectProperty[];
+  aspectProperties: AspectProperty[];
 }
 
 export interface AspectProperty {
@@ -188,4 +190,103 @@ export interface SmartFolderNodeEvaluation {
 
 export function fidToUuid(fid: string): string {
   return `${FID_PREFIX}${fid}`;
+}
+
+export function isFid(uuid: string): boolean {
+  return uuid?.startsWith(FID_PREFIX);
+}
+
+export function uuidToFid(fid: string): string {
+  return fid?.startsWith(FID_PREFIX) ? fid.substring(FID_PREFIX.length) : fid;
+}
+
+export function isRootFolder(uuid: string): boolean {
+  return uuid === ROOT_FOLDER_UUID;
+}
+
+export function isSystemRootFolder(uuid: string): boolean {
+  return uuid === SYSTEM_FOLDER_UUID;
+}
+
+export function isFolder(metadata: Partial<Node>): boolean {
+  return metadata?.mimetype === FOLDER_MIMETYPE;
+}
+
+export function isUser(metadata: Partial<Node>): boolean {
+  return metadata?.mimetype === USER_MIMETYPE;
+}
+
+export function isApikey(metadata: Partial<Node>): boolean {
+  return metadata?.mimetype === API_KEY_MIMETYPE;
+}
+
+export function isSmartFolder(metadata: Partial<Node>): boolean {
+  return metadata?.mimetype === SMART_FOLDER_MIMETYPE;
+}
+
+export function isAction(metadata: Partial<Node>): boolean {
+  return metadata?.mimetype === ACTION_MIMETYPE;
+}
+
+export function isMetaNode(metadata: Partial<Node>): boolean {
+  return metadata?.mimetype === META_NODE_MIMETYPE;
+}
+
+export function isGroup(metadata: Partial<Node>): boolean {
+  return metadata?.mimetype === GROUP_MIMETYPE;
+}
+
+export function isOcrTemplate(metadata: Partial<Node>): boolean {
+  return metadata?.mimetype === OCR_TEMPLATE_MIMETYPE;
+}
+
+export function isAspect(metadata: Partial<Node>): boolean {
+  return metadata?.mimetype === ASPECT_MIMETYPE;
+}
+
+export function isSystemNode(metadata: Partial<Node>): boolean {
+  return SYSTEM_MIMETYPES.some((mimetype) => mimetype === metadata?.mimetype);
+}
+
+export function isJavascript(file: File) {
+  return (
+    file.type === "application/javascript" || file.type === "text/javascript"
+  );
+}
+
+export function isAspectsFolder(metadata: Partial<Node>): boolean {
+  return metadata.uuid === ASPECTS_FOLDER_UUID;
+}
+
+export function isActionsFolder(metadata: Partial<Node>): boolean {
+  return metadata.uuid === ACTIONS_FOLDER_UUID;
+}
+
+export function isApiKeysFolder(metadata: Partial<Node>): boolean {
+  return metadata.uuid === API_KEYS_FOLDER_UUID;
+}
+
+export function isExtensionsFolder(metadata: Partial<Node>): boolean {
+  return metadata.uuid === EXT_FOLDER_UUID;
+}
+
+export function isExtension(metadata: Partial<Node>): boolean {
+  return metadata.mimetype === EXT_MIMETYPE;
+}
+
+export type Permission = "Read" | "Write" | "Export";
+
+export const SYSTEM_FOLDERS = [
+  SYSTEM_FOLDER_UUID,
+  ASPECTS_FOLDER_UUID,
+  USERS_FOLDER_UUID,
+  GROUPS_FOLDER_UUID,
+  ACTIONS_FOLDER_UUID,
+  EXT_FOLDER_UUID,
+  OCR_TEMPLATES_FOLDER_UUID,
+  API_KEYS_FOLDER_UUID,
+];
+
+export function isSystemFolder(metadata: Partial<Node>): boolean {
+  return SYSTEM_FOLDERS.some((folder) => folder === metadata.uuid);
 }

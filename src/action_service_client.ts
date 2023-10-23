@@ -1,17 +1,44 @@
-import { Either } from "./either";
+import { Either, right } from "./either";
 import { ServerOpts } from "./server_opts";
 import { AntboxError } from "./antbox_error";
-import { processResponse, toVoid } from "./process_response";
+import { processResponse, toObject, toVoid } from "./process_response";
 import { requestInit } from "./request_utils";
-import { Action } from "./antbox";
+import { ActionNode, Node } from "./antbox";
 
 export class ActionServiceClient {
   constructor(private readonly server: ServerOpts) {}
 
-  get(uuid: string): Promise<Action> {
-    const getEndpoint = this.endpoint("/", uuid);
+  get(uuid: string): Promise<Either<AntboxError, ActionNode>> {
+    const getEndpoint = this.#endpoint("/", uuid);
 
-    return fetch(getEndpoint, this.#init).then((res) => res.json());
+    return fetch(getEndpoint, this.#init).then(
+      processResponse(toObject<ActionNode>)
+    );
+  }
+
+  export(uuid: string): Promise<Either<AntboxError, Blob>> {
+    const url = this.#endpoint("/", uuid, "/-/export");
+    const init = requestInit(this.server);
+
+    return fetch(url, init).then(processResponse((res) => res.blob()));
+  }
+
+  delete(uuid: string): Promise<Either<AntboxError, void>> {
+    const url = this.#endpoint("/", uuid);
+    const init = requestInit(this.server, "DELETE");
+
+    return fetch(url, init).then(processResponse(toVoid));
+  }
+
+  createOrReplace(file: File): Promise<Either<AntboxError, Node>> {
+    const url = this.server.url.concat("/upload/actions");
+
+    const formData = new FormData();
+    formData.append("file", file, file.name);
+
+    const init = requestInit(this.server, "POST", formData);
+
+    return fetch(url, init).then(processResponse(toObject<Node>));
   }
 
   run(
@@ -19,33 +46,40 @@ export class ActionServiceClient {
     uuids: string[],
     params?: Record<string, string>
   ): Promise<Either<AntboxError, void>> {
-    const getEndpoint = this.endpoint(
+    const getEndpoint = this.#endpoint(
       "/",
       uuid,
       "/-/run?uuids=",
       uuids.join(","),
       "&",
-      this.formatParms(params)
+      this.#formatParms(params)
     );
 
     return fetch(getEndpoint, this.#init).then(processResponse(toVoid));
   }
 
-  list(): Promise<Action[]> {
-    const createEndpoint = this.endpoint();
+  list(): Promise<Either<AntboxError, ActionNode[]>> {
+    const createEndpoint = this.#endpoint();
 
     return fetch(createEndpoint, this.#init)
-      .then((res) => res.json() as unknown as Action[])
-      .then((actions) =>
-        actions.sort((a, b) => a.title.localeCompare(b.title))
-      );
+      .then(processResponse(toObject<ActionNode[]>))
+      .then((actionsOrErr) => {
+        if (actionsOrErr.isLeft()) {
+          return actionsOrErr;
+        }
+
+        const sorted = actionsOrErr.value.sort((a, b) =>
+          a.title.localeCompare(b.title)
+        );
+        return right(sorted);
+      });
   }
 
   get #init() {
     return requestInit(this.server);
   }
 
-  private formatParms(params?: Record<string, string>): string {
+  #formatParms(params?: Record<string, string>): string {
     if (!params) {
       return "";
     }
@@ -55,7 +89,7 @@ export class ActionServiceClient {
       .join("&");
   }
 
-  private endpoint(...path: string[]): string {
+  #endpoint(...path: string[]): string {
     const endpoint = this.server.url.concat("/", "actions");
 
     if (!path.length) {
