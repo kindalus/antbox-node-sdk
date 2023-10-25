@@ -149,6 +149,10 @@ export interface AspectProperty {
   default?: unknown;
 }
 
+export interface GroupNode extends Node {
+  mimetype: "application/vnd.antbox.group";
+}
+
 export type PropertyType =
   | "boolean"
   | "date"
@@ -210,6 +214,10 @@ export function isSystemRootFolder(uuid: string): boolean {
 
 export function isFolder(metadata: Partial<Node>): boolean {
   return metadata?.mimetype === FOLDER_MIMETYPE;
+}
+
+export function isGroupsFolder(metadata: Partial<Node>): boolean {
+  return metadata.uuid === GROUPS_FOLDER_UUID;
 }
 
 export function isUser(metadata: Partial<Node>): boolean {
