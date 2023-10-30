@@ -60,6 +60,7 @@ export type {
   SmartFolderNode,
   SmartFolderNodeEvaluation,
   WebContent,
+  UserNode,
 } from "./antbox";
 
 export {
