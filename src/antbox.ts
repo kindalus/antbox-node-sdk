@@ -232,6 +232,10 @@ export function isGroupsFolder(metadata: Partial<Node>): boolean {
   return metadata.uuid === GROUPS_FOLDER_UUID;
 }
 
+export function isUsersFolder(metadata: Partial<Node>): boolean {
+  return metadata.uuid === USERS_FOLDER_UUID;
+}
+
 export function isUser(metadata: Partial<Node>): boolean {
   return metadata?.mimetype === USER_MIMETYPE;
 }

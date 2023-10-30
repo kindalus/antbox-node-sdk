@@ -19,6 +19,7 @@ import groupServiceClient, { GroupServiceClient } from "./group_service_client";
 import apiKeyServiceClient, {
   ApiKeyServiceClient,
 } from "./api_key_service_client";
+import userServiceClient, { UserServiceClient } from "./user_service_client";
 
 export {
   ActionServiceClient,
@@ -29,11 +30,13 @@ export {
   LoginClient,
   NodeServiceClient,
   WebContentServiceClient,
+  UserServiceClient,
   apiKeyServiceClient,
   actionServiceClient,
   aspectServiceClient,
   extServiceClient,
   groupServiceClient,
+  userServiceClient,
   loginClient,
   nodeServiceClient,
   webContentServiceClient,
@@ -92,6 +95,7 @@ export {
   isFolder,
   isGroup,
   isGroupsFolder,
+  isUsersFolder,
   isJavascript,
   isMetaNode,
   isOcrTemplate,
