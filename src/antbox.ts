@@ -19,6 +19,7 @@ export const SYSTEM_FOLDER_UUID = "--system--";
 export const OCR_TEMPLATES_FOLDER_UUID = "--ocr-templates--";
 export const API_KEYS_FOLDER_UUID = "--api-keys--";
 
+export const ADMINS_GROUP_UUID = "--admins--";
 const FID_PREFIX = "--fid--";
 
 export const SYSTEM_MIMETYPES = [
@@ -153,6 +154,17 @@ export interface GroupNode extends Node {
   mimetype: "application/vnd.antbox.group";
 }
 
+export interface UserNode extends Node {
+  email: string;
+  group: string;
+  groups: string[];
+}
+
+export interface ApiKeyNode extends Node {
+  group: string;
+  secret: string;
+}
+
 export type PropertyType =
   | "boolean"
   | "date"
@@ -224,7 +236,7 @@ export function isUser(metadata: Partial<Node>): boolean {
   return metadata?.mimetype === USER_MIMETYPE;
 }
 
-export function isApikey(metadata: Partial<Node>): boolean {
+export function isApiKey(metadata: Partial<Node>): boolean {
   return metadata?.mimetype === API_KEY_MIMETYPE;
 }
 

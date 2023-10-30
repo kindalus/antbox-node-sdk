@@ -16,15 +16,20 @@ import loginClient, { LoginClient } from "./login_client";
 
 import extServiceClient, { ExtServiceClient } from "./ext_service_client";
 import groupServiceClient, { GroupServiceClient } from "./group_service_client";
+import apiKeyServiceClient, {
+  ApiKeyServiceClient,
+} from "./api_key_service_client";
 
 export {
   ActionServiceClient,
+  ApiKeyServiceClient,
   AspectServiceClient,
   ExtServiceClient,
   GroupServiceClient,
   LoginClient,
   NodeServiceClient,
   WebContentServiceClient,
+  apiKeyServiceClient,
   actionServiceClient,
   aspectServiceClient,
   extServiceClient,
@@ -35,6 +40,7 @@ export {
 };
 
 export type {
+  ApiKeyNode,
   ActionNode,
   ActionParams,
   AspectNode,
@@ -54,9 +60,11 @@ export type {
 } from "./antbox";
 
 export {
+  ADMINS_GROUP_UUID,
   ACTIONS_FOLDER_UUID,
   ACTION_MIMETYPE,
   API_KEYS_FOLDER_UUID,
+  API_KEY_MIMETYPE,
   ASPECTS_FOLDER_UUID,
   ASPECT_MIMETYPE,
   EXT_FOLDER_UUID,
@@ -75,7 +83,7 @@ export {
   isAction,
   isActionsFolder,
   isApiKeysFolder,
-  isApikey,
+  isApiKey,
   isAspect,
   isAspectsFolder,
   isExtension,

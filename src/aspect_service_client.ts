@@ -37,13 +37,17 @@ export class AspectServiceClient {
     return fetch(url, init).then(processResponse(toVoid));
   }
 
-  createOrReplace(file: File): Promise<Either<AntboxError, AspectNode>> {
-    const url = this.server.url.concat("/upload/aspects");
+  createOrReplace(
+    metadata: Partial<AspectNode>
+  ): Promise<Either<AntboxError, AspectNode>> {
+    const url = this.#endpoint();
 
-    const formData = new FormData();
-    formData.append("file", file, file.name);
-
-    const init = requestInit(this.server, "POST", formData);
+    const init = requestInit(
+      this.server,
+      "POST",
+      JSON.stringify(metadata),
+      "application/json"
+    );
 
     return fetch(url, init).then(processResponse(toObject<AspectNode>));
   }
