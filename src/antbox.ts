@@ -75,7 +75,9 @@ export interface FolderNode extends Node {
     group: Permissions[];
     authenticated: Permissions[];
     anonymous: Permissions[];
+    advanced: Record<string, Permissions[]>;
   };
+  childFilters: NodeFilter[];
 }
 
 export interface SmartFolderNode extends Node {
