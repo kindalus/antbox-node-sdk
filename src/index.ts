@@ -54,6 +54,7 @@ export type {
   GroupNode,
   NodeFilter,
   NodeFilterResult,
+  Permission,
   Permissions,
   Properties,
   PropertyType,
