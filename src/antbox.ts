@@ -6,7 +6,8 @@ export const ACTION_MIMETYPE = "application/vnd.antbox.action";
 export const EXT_MIMETYPE = "application/vnd.antbox.extension";
 export const USER_MIMETYPE = "application/vnd.antbox.user";
 export const GROUP_MIMETYPE = "application/vnd.antbox.group";
-export const OCR_TEMPLATE_MIMETYPE = "application/vnd.antbox.ocrtemplate";
+export const FORM_SPECIFICATION_MIMETYPE =
+  "application/vnd.antbox.formspecification";
 export const API_KEY_MIMETYPE = "application/vnd.antbox.apikey";
 
 export const ROOT_FOLDER_UUID = "--root--";
@@ -16,7 +17,7 @@ export const ASPECTS_FOLDER_UUID = "--aspects--";
 export const ACTIONS_FOLDER_UUID = "--actions--";
 export const EXT_FOLDER_UUID = "--ext--";
 export const SYSTEM_FOLDER_UUID = "--system--";
-export const OCR_TEMPLATES_FOLDER_UUID = "--ocr-templates--";
+export const FORMS_SPECIFICATIONS_FOLDER_UUID = "--forms-specifications--";
 export const API_KEYS_FOLDER_UUID = "--api-keys--";
 
 export const ADMINS_GROUP_UUID = "--admins--";
@@ -28,7 +29,7 @@ export const SYSTEM_MIMETYPES = [
   EXT_MIMETYPE,
   USER_MIMETYPE,
   GROUP_MIMETYPE,
-  OCR_TEMPLATE_MIMETYPE,
+  FORM_SPECIFICATION_MIMETYPE,
   API_KEY_MIMETYPE,
 ];
 
@@ -262,8 +263,8 @@ export function isGroup(metadata: Partial<Node>): boolean {
   return metadata?.mimetype === GROUP_MIMETYPE;
 }
 
-export function isOcrTemplate(metadata: Partial<Node>): boolean {
-  return metadata?.mimetype === OCR_TEMPLATE_MIMETYPE;
+export function isFormSpecification(metadata: Partial<Node>): boolean {
+  return metadata?.mimetype === FORM_SPECIFICATION_MIMETYPE;
 }
 
 export function isAspect(metadata: Partial<Node>): boolean {
@@ -309,7 +310,7 @@ export const SYSTEM_FOLDERS = [
   GROUPS_FOLDER_UUID,
   ACTIONS_FOLDER_UUID,
   EXT_FOLDER_UUID,
-  OCR_TEMPLATES_FOLDER_UUID,
+  FORMS_SPECIFICATIONS_FOLDER_UUID,
   API_KEYS_FOLDER_UUID,
 ];
 

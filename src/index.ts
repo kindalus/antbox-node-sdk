@@ -99,7 +99,7 @@ export {
   isUsersFolder,
   isJavascript,
   isMetaNode,
-  isOcrTemplate,
+  isFormSpecification,
   isRootFolder,
   isSmartFolder,
   isSystemFolder,
