@@ -8,6 +8,10 @@ import { UserNode, Node } from "./antbox";
 export class UserServiceClient {
   constructor(private readonly server: ServerOpts) {}
 
+  me(): Promise<Either<AntboxError, UserNode>> {
+    return this.get("me");
+  }
+
   create(user: Partial<UserNode>): Promise<Either<AntboxError, Node>> {
     const url = this.#endpoint();
 
