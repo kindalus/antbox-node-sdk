@@ -39,6 +39,7 @@ export interface ActionNode extends Node {
   runManually: boolean;
   params: string[];
   filters: NodeFilter[];
+  groupsAllowed: string[];
 }
 
 export interface ActionParams {
