@@ -128,7 +128,7 @@ export class NodeServiceClient {
     uuid: string
   ): Promise<Either<AntboxError, SmartFolderNodeEvaluation>> {
     const url = endpoint(this.server, uuid, "-", "evaluate");
-    const init = requestInit();
+    const init = requestInit(this.server);
     const byTitle = (a: Node, b: Node) => a.title.localeCompare(b.title);
 
     return fetch(url, init).then(
@@ -181,7 +181,9 @@ function uploadEndpoint(server: ServerOpts, uuid?: string) {
 }
 
 function exportEndpoint(server: ServerOpts, uuid: string): string {
-  return endpoint(server, uuid, "-", "export");
+  if (!server.tenant) return endpoint(server, uuid, "-", "export");
+
+  return endpoint(server, uuid, "-", `export?x-tenant=${server.tenant}`);
 }
 
 function endpoint(server: ServerOpts, ...path: string[]): string {
