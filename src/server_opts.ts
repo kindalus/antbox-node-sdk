@@ -1,5 +1,6 @@
 export interface ServerOpts {
-	url: string;
-	accessToken?: string;
-	tenant?: string;
+  url: string;
+  accessToken?: string;
+  tenant?: string;
+  apiKey?: string;
 }
