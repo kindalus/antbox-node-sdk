@@ -10,7 +10,7 @@ export class AspectServiceClient {
   get(uuid: string): Promise<Either<AntboxError, AspectNode>> {
     const url = this.#endpoint("/", uuid);
 
-    const init = requestInit();
+    const init = requestInit(this.server);
 
     return fetch(url, init).then(processResponse(toObject<AspectNode>));
   }
@@ -18,7 +18,7 @@ export class AspectServiceClient {
   list(): Promise<Either<AntboxError, AspectNode[]>> {
     const url = this.#endpoint();
 
-    const init = requestInit();
+    const init = requestInit(this.server);
 
     return fetch(url, init).then(processResponse(toObject<AspectNode[]>));
   }
